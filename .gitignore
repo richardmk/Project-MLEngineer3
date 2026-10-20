@@ -1,0 +1,45 @@
+# --- Data (raw CSV ~470 MB exceeds GitHub's 100 MB limit) ---
+data/raw/*
+!data/raw/.gitkeep
+data/processed/*
+!data/processed/.gitkeep
+
+# --- Models & experiment tracking (artifacts live in DagsHub/MLflow) ---
+models/*
+!models/.gitkeep
+mlruns/
+mlartifacts/
+optuna*.db
+
+# --- Secrets ---
+.env
+.env.*
+!.env.example
+
+# --- Course material / local working notes (not part of the deliverable) ---
+*.pdf
+prompt.md
+
+# --- Python ---
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+.ruff_cache/
+.pytest_cache/
+.mypy_cache/
+build/
+dist/
+
+# --- Jupyter ---
+.ipynb_checkpoints/
+
+# --- Editors / OS ---
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+*:Zone.Identifier
+
+# --- Streamlit ---
+.streamlit/secrets.toml
