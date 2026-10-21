@@ -139,8 +139,9 @@ def suggest_params(trial: optuna.Trial, name: str, prefix: str = "") -> dict[str
         }
     if name == "random_forest":
         return {
-            "n_estimators": trial.suggest_int(f"{p}n_estimators", 100, 300, step=50),
-            "max_depth": trial.suggest_int(f"{p}max_depth", 6, 20),
+            # Kept small on purpose: one RF CV costs ~10x a boosting CV on this data.
+            "n_estimators": trial.suggest_int(f"{p}n_estimators", 50, 200, step=50),
+            "max_depth": trial.suggest_int(f"{p}max_depth", 6, 16),
             "min_samples_leaf": trial.suggest_int(f"{p}min_samples_leaf", 1, 50, log=True),
             "max_features": trial.suggest_float(f"{p}max_features", 0.3, 1.0),
             "class_weight": trial.suggest_categorical(
@@ -379,6 +380,31 @@ def best_model_params(study: optuna.Study) -> tuple[str, dict[str, Any]]:
         raise ValueError("Single-model studies must set study.user_attrs['model']")
     prefix = f"{name}__"
     return name, {k.removeprefix(prefix): v for k, v in params.items()}
+
+
+def study_history(study: optuna.Study) -> pd.DataFrame:
+    """Per-trial history with best-so-far value and cumulative compute time.
+
+    Args:
+        study: A finished study.
+
+    Returns:
+        DataFrame with trial, state, value, duration_s, best_so_far, cumulative_s.
+    """
+    rows = [
+        {
+            "trial": t.number,
+            "state": t.state.name,
+            "model": t.params.get("model", study.user_attrs.get("model")),
+            "value": t.value,
+            "duration_s": t.duration.total_seconds() if t.duration else np.nan,
+        }
+        for t in study.trials
+    ]
+    hist = pd.DataFrame(rows)
+    hist["best_so_far"] = hist["value"].cummax().ffill()
+    hist["cumulative_s"] = hist["duration_s"].cumsum()
+    return hist
 
 
 def get_feature_importance(model: BaseEstimator, features: list[str]) -> pd.Series:

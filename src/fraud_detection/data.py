@@ -91,7 +91,9 @@ def build_transactions_parquet(
     out_path.parent.mkdir(parents=True, exist_ok=True)
     (
         scan_raw_csv(csv_path)
-        .with_columns(pl.col("nameDest").str.starts_with("M").cast(pl.Int8).alias("is_merchant_dest"))
+        .with_columns(
+            pl.col("nameDest").str.starts_with("M").cast(pl.Int8).alias("is_merchant_dest")
+        )
         .drop("nameOrig", "nameDest")
         .sink_parquet(out_path, compression="zstd")
     )
