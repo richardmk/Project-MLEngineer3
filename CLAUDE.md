@@ -9,6 +9,7 @@ Fraud detection on PaySim (MLE specialization, Course III final project). Binary
 - Run a notebook end-to-end: `uv run jupyter nbconvert --to notebook --execute --inplace notebooks/<nb>.ipynb`
 - Notebooks are generated from `scripts/build_notebook_XX.py`; edit the generator, regenerate, then execute.
 - Monitoring app: `uv run streamlit run app/app.py`
+- Final HTML report + README figures (after running notebooks): `uv run python scripts/build_report.py`
 - Export requirements after changing deps: `uv export --no-hashes --no-dev --format requirements-txt -o requirements.txt`
 
 ## Layout
