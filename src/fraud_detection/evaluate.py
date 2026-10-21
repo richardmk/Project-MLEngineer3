@@ -47,7 +47,12 @@ def compute_metrics(y_true: np.ndarray, y_score: np.ndarray, threshold: float) -
 def find_best_threshold(
     y_true: np.ndarray, y_score: np.ndarray, beta: float = 2.0
 ) -> tuple[float, float]:
-    """Find the threshold that maximizes F-beta on the given (out-of-fold) predictions.
+    """Find a robust threshold that maximizes F-beta on the given (out-of-fold) predictions.
+
+    Every threshold inside a gap between consecutive score values yields the same
+    predictions, so the F-beta optimum is an interval, not a point. Instead of its
+    edge (one tiny score shift away from losing frauds or adding false alarms), the
+    midpoint of the first optimal interval is returned for margin under drift.
 
     Args:
         y_true: Binary labels.
@@ -55,7 +60,7 @@ def find_best_threshold(
         beta: F-beta weight; beta=2 values recall twice as much as precision.
 
     Returns:
-        (best_threshold, best_fbeta).
+        (threshold, best_fbeta).
     """
     precision, recall, thresholds = precision_recall_curve(y_true, y_score)
     precision, recall = precision[:-1], recall[:-1]  # last point has no threshold
@@ -63,8 +68,14 @@ def find_best_threshold(
     fbeta = np.divide(
         (1 + beta**2) * precision * recall, denom, out=np.zeros_like(denom), where=denom > 0
     )
-    best = int(np.argmax(fbeta))
-    return float(thresholds[best]), float(fbeta[best])
+    is_best = np.isclose(fbeta, fbeta.max(), rtol=0, atol=1e-12)
+    lo = int(np.argmax(is_best))
+    hi = lo
+    while hi + 1 < len(is_best) and is_best[hi + 1]:
+        hi += 1
+    # Predictions are constant for thresholds in (thresholds[lo - 1], thresholds[hi]].
+    lower = float(thresholds[lo - 1]) if lo > 0 else 0.0
+    return (lower + float(thresholds[hi])) / 2, float(fbeta[lo])
 
 
 def expected_cost_curve(
