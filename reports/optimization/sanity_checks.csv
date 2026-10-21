@@ -1,0 +1,9 @@
+id,experimento,n_features,cv_pr_auc,min_fold
+all_features,Modelo con las 15 features,15,0.9988248406263358,0.995332808067117
+no_full_drain,Sin is_full_drain,14,0.9986464635823971,0.9945858543295883
+pre_tx_only,Solo info previa a la transacción,7,0.9838146192043761,0.9426618788345926
+no_orig_balance,Sin info del saldo origen,8,0.7582233862524264,0.7123097532460194
+amount_type_hour,Solo amount + tipo + hora,3,0.31874456779530147,0.26940149741231156
+shuffled_labels,Labels barajados (test de leakage),15,0.0019473763881031276,0.0016965331144387075
+rule_is_full_drain,Regla is_full_drain como score,1,0.9750835698775864,0.9733208812656827
+rule_isFlaggedFraud,Regla isFlaggedFraud como score,1,0.0033795912179058587,0.0012827512363707682

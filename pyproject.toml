@@ -43,7 +43,7 @@ extend-include = ["*.ipynb"]
 
 [tool.ruff.lint]
 select = ["E", "F", "W", "I", "N", "UP", "B", "SIM", "D"]
-ignore = ["D100", "D104"]
+ignore = ["D100", "D104", "N803", "N806"]  # X follows the scikit-learn convention
 
 [tool.ruff.lint.pydocstyle]
 convention = "google"

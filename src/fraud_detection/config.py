@@ -36,3 +36,15 @@ PERIOD_STEPS: int = 24
 
 # --- Experiment tracking -----------------------------------------------------
 MLFLOW_EXPERIMENT_SETUP: str = "setup-check"
+MLFLOW_EXPERIMENT_TRAINING: str = "paysim-fraud-training"
+REGISTERED_MODEL_NAME: str = "paysim-fraud-detector"
+CHAMPION_ALIAS: str = "champion"
+
+# --- Training ----------------------------------------------------------------
+# Share of legit rows kept in each training fold (all frauds are kept). Speeds up
+# tuning ~10x; validation and test always keep the real class balance.
+NEGATIVE_FRACTION: float = 0.1
+N_CV_FOLDS: int = 4
+CHAMPION_MODEL_PATH: Path = MODELS_DIR / "champion.joblib"
+CHAMPION_META_PATH: Path = MODELS_DIR / "champion_meta.json"
+OPTIMIZATION_REPORTS_DIR: Path = REPORTS_DIR / "optimization"
