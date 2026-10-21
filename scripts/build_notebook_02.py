@@ -12,7 +12,7 @@ Usage:
 import sys
 from pathlib import Path
 
-import nbformat as nbf
+from nb_builder import build, fill
 
 CELLS: list[tuple[str, str]] = [
     (
@@ -522,58 +522,12 @@ ganador de la búsqueda por algoritmo, lo que valida la selección de forma inde
 }
 
 
-def _is_placeholder(src: str) -> bool:
-    return src.isupper() and src.endswith("INTERPRETATION")
-
-
-def build() -> nbf.NotebookNode:
-    """Build the notebook from CELLS; placeholders without text are skipped."""
-    nb = nbf.v4.new_notebook()
-    cells = []
-    for kind, src in CELLS:
-        if kind == "code":
-            cells.append(nbf.v4.new_code_cell(src))
-        elif _is_placeholder(src):
-            if src in INTERPRETATIONS:
-                cell = nbf.v4.new_markdown_cell(INTERPRETATIONS[src])
-                cell.metadata["interpretation"] = src
-                cells.append(cell)
-        else:
-            cells.append(nbf.v4.new_markdown_cell(src))
-    nb.cells = cells
-    nb.metadata["kernelspec"] = {"name": "python3", "display_name": "Python 3", "language": "python"}
-    return nb
-
-
-def fill(path: Path) -> None:
-    """Insert/update interpretation cells in an already executed notebook, keeping outputs.
-
-    Each interpretation goes right after the code cell that precedes its placeholder in CELLS.
-    """
-    nb = nbf.read(path, as_version=4)
-    for pos, (kind, src) in enumerate(CELLS):
-        if kind != "md" or not _is_placeholder(src) or src not in INTERPRETATIONS:
-            continue
-        anchor = next(s for k, s in reversed(CELLS[:pos]) if k == "code")
-        idx = next(i for i, c in enumerate(nb.cells) if c.cell_type == "code" and c.source == anchor)
-        nxt = nb.cells[idx + 1] if idx + 1 < len(nb.cells) else None
-        cell = nbf.v4.new_markdown_cell(INTERPRETATIONS[src])
-        cell.metadata["interpretation"] = src
-        if nxt is not None and nxt.metadata.get("interpretation") == src:
-            nb.cells[idx + 1] = cell
-        else:
-            nb.cells.insert(idx + 1, cell)
-    nbf.write(nb, path)
-    print(f"Filled interpretations in {path}")
-
-
 def main() -> None:
     out = Path(__file__).resolve().parents[1] / "notebooks" / "02_entrenamiento.ipynb"
     if "--fill" in sys.argv:
-        fill(out)
-        return
-    nbf.write(build(), out)
-    print(f"Wrote {out}")
+        fill(CELLS, INTERPRETATIONS, out)
+    else:
+        build(CELLS, INTERPRETATIONS, out)
 
 
 if __name__ == "__main__":
