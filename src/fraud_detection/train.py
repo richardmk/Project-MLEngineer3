@@ -323,7 +323,11 @@ def run_study(
         The finished study.
     """
     if sampler == "tpe":
-        opt_sampler = optuna.samplers.TPESampler(seed=SEED, multivariate=True, group=True)
+        # 5 random startup trials (default 10): with the same seed these coincide with
+        # RandomSampler's first trials, so a short budget would leave TPE little room.
+        opt_sampler = optuna.samplers.TPESampler(
+            n_startup_trials=5, seed=SEED, multivariate=True, group=True
+        )
         pruner: optuna.pruners.BasePruner = optuna.pruners.MedianPruner(
             n_startup_trials=5, n_warmup_steps=1
         )
