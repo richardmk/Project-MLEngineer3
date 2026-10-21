@@ -48,3 +48,12 @@ N_CV_FOLDS: int = 4
 CHAMPION_MODEL_PATH: Path = MODELS_DIR / "champion.joblib"
 CHAMPION_META_PATH: Path = MODELS_DIR / "champion_meta.json"
 OPTIMIZATION_REPORTS_DIR: Path = REPORTS_DIR / "optimization"
+TEST_RESULTS_CSV: Path = OPTIMIZATION_REPORTS_DIR / "test_results.csv"
+
+# --- Monitoring -------------------------------------------------------------
+MLFLOW_EXPERIMENT_MONITORING: str = "paysim-fraud-monitoring"
+EVIDENTLY_DIR: Path = REPORTS_DIR / "evidently"
+MONITORING_SUMMARY_CSV: Path = EVIDENTLY_DIR / "monitoring_summary.csv"
+MODEL_INFO_JSON: Path = EVIDENTLY_DIR / "model_info.json"
+REFERENCE_SCORED_CSV: Path = DATA_DIR / "reference_scored.csv"
+PRODUCTION_SCORED_CSV: Path = DATA_DIR / "production_scored.csv"
