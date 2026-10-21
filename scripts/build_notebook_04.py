@@ -42,7 +42,6 @@ warnings.filterwarnings("ignore")  # before imports: silences tqdm/evidently imp
 
 import matplotlib.pyplot as plt
 import mlflow
-import numpy as np
 import pandas as pd
 
 from fraud_detection import config

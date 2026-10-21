@@ -35,7 +35,6 @@ Todo se calcula sobre el **test** (steps 313–400), con el modelo ya fijado. Pr
 import warnings
 
 import matplotlib.pyplot as plt
-import numpy as np
 import pandas as pd
 import shap
 from sklearn.inspection import permutation_importance
