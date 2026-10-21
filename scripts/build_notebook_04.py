@@ -34,7 +34,8 @@ Los labels de producción se usan **solo** para calcular métricas online; el mo
     ),
     (
         "code",
-        """import os
+        """import json
+import os
 import warnings
 
 warnings.filterwarnings("ignore")  # before imports: silences tqdm/evidently import-time warnings
@@ -110,6 +111,13 @@ full_snap.save_html(str(config.EVIDENTLY_DIR / "production_all.html"))
 summary = periods.merge(pd.DataFrame(rows), on="period", suffixes=("", "_dup"))
 summary = summary.drop(columns=[c for c in summary.columns if c.endswith("_dup")])
 summary.to_csv(config.MONITORING_SUMMARY_CSV, index=False)
+# Model card for the app: it must run from a clean clone, where models/ is git-ignored.
+model_info = {
+    "model_name": meta["model_name"], "registered_model": meta["registered_model"], "version": meta["version"],
+    "alias": meta["alias"], "threshold": THRESHOLD, "reference_fraud_rate": float(reference["isFraud"].mean()),
+    "offline_test": {k: float(offline[k]) for k in ["pr_auc", "precision", "recall", "f1", "f2"]},
+}
+config.MODEL_INFO_JSON.write_text(json.dumps(model_info, indent=2))
 print(f"{len(rows)} reportes por periodo + 1 de toda la producción en {config.EVIDENTLY_DIR.relative_to(config.PROJECT_ROOT)}")
 summary[["period", "transacciones", "fraudes", "features_drift_share", "drift_score__prediction",
          "drift_score__isFraud", "pr_auc", "recall", "precision"]]""",
