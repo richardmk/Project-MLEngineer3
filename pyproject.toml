@@ -1,0 +1,53 @@
+[project]
+name = "fraud-detection"
+version = "1.0.0"
+description = "Fraud detection on PaySim mobile money transactions: training, interpretability and monitoring."
+readme = "README.md"
+authors = [{ name = "Richard Mejia C" }]
+requires-python = ">=3.12,<3.13"
+dependencies = [
+    "evidently>=0.7.23",
+    "lightgbm>=4.7.0",
+    "lime>=0.2.0.1",
+    "matplotlib>=3.11.2",
+    "mlflow>=3.17.1",
+    "numpy>=2.5.4",
+    "optuna>=5.0.0",
+    "pandas>=3.0.6",
+    "plotly>=5.24.1",
+    "polars>=2.0.0",
+    "pyarrow>=25.0.1",
+    "python-dotenv>=1.2.4",
+    "scikit-learn>=1.9.1",
+    "seaborn>=0.13.2",
+    "shap>=0.54.1",
+    "streamlit>=1.66.0",
+    "xgboost>=3.4.1",
+]
+
+[dependency-groups]
+dev = [
+    "ipykernel>=7.4.0",
+    "nbconvert>=7.17.2",
+    "ruff>=0.17.1",
+]
+
+[build-system]
+requires = ["uv_build>=0.11,<0.12"]
+build-backend = "uv_build"
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+extend-include = ["*.ipynb"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "N", "UP", "B", "SIM", "D"]
+ignore = ["D100", "D104", "N803", "N806"]  # X follows the scikit-learn convention
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.ruff.lint.per-file-ignores]
+"notebooks/*" = ["D", "E402", "E501"]
+"scripts/*" = ["D", "E501"]

@@ -1,0 +1,15 @@
+{
+  "model_name": "xgboost",
+  "registered_model": "paysim-fraud-detector",
+  "version": "2",
+  "alias": "champion",
+  "threshold": 0.8275063335895538,
+  "reference_fraud_rate": 0.00159,
+  "offline_test": {
+    "pr_auc": 0.9999945576217242,
+    "precision": 1.0,
+    "recall": 0.9989539748953976,
+    "f1": 0.999476713762428,
+    "f2": 0.9991630048127224
+  }
+}
